@@ -1017,6 +1017,49 @@
             },
         });
 
+         // ==================== MAN V2 API ====================
+        // MAN V2 API 基础URL
+        const MAN_V2_BASE_URL = CONSTANTS.MAN_V2_BASE_URL;
+
+        // MAN V2 API 实例
+        const manV2Api = new HttpRequest(MAN_V2_BASE_URL, {
+            responseHandler: ({ data }) => {
+                return new Promise((resolve, reject) => {
+                    if (data && typeof data.code === 'number') {
+                        if (data.code === 1 || data.code === 200) {
+                            resolve(data.data);
+                        } else {
+                            reject({
+                                code: data.code,
+                                data: data.data,
+                                message: data.message,
+                            });
+                        }
+                    } else {
+                        resolve(data.data || data);
+                    }
+                });
+            },
+        });
+
+        // 获取指定 path 下所有 Pin（分页）
+        async function getPinListByPath(params) {
+            const { cursor = 0, size = 20, path } = params;
+            const query = new URLSearchParams({
+                cursor: cursor.toString(),
+                size: size.toString(),
+                path
+            }).toString();
+            return manV2Api.get('/pin/path/list' + `?${query}`);
+        }
+
+        // 获取 Pin 详情
+        async function getPinDetail(params) {
+            const { numberOrId } = params;
+            return manV2Api.get(`/pin/${numberOrId}`);
+        }
+
+
         // ==================== Meta-Contract 相关函数 ====================
 
         // 辅助函数：生成唯一键
