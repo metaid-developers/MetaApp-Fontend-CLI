@@ -22,7 +22,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/metaidjs-v2@1.0.0/dist/metaid.umd.js"></script>
     <!-- Buffer 浏览器版本 -->
-    <script src="https://cdn.jsdelivr.net/npm/buffer@6.0.3/dist/buffer.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/buffer@6.0.3/+esm"></script>
     <script>
         // 确保 Buffer 全局可用
         if (typeof buffer !== 'undefined' && buffer.Buffer) {
@@ -1049,6 +1049,19 @@
                 path
             }).toString();
             return manV2Api.get('/pin/path/list' + `?${query}`);
+        }
+
+           /**
+         * 5. 获取指定地址和 path 下 Pin（倒序分页）
+         */
+        async function getAddressPinList(params){
+        const { address, cursor = 0, size = 20, path } = params
+        const query = new URLSearchParams({
+        cursor: cursor.toString(),
+        size: size.toString(),
+        path
+        }).toString()
+        return manV2Api.get(`/address/pin/list/${address}?${query}`)
         }
 
         // 获取 Pin 详情
